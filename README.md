@@ -57,7 +57,7 @@ The email address used to agree to Let's Encrypt's TOS and subscribe to cert-rel
       # - domains:
       #     - example3.com
 
-A list of domains (and other data) for which certs should be generated. You can add an `email` key to any list item to override the `certbot_admin_email`. When using the `webroot` creation method, a `webroot` item has to be provided, specifying which directory to use for the authentication. Make sure your webserver correctly delivers contents from this directory.
+A list of domains (and other data) for which certs should be generated. You can add an `email` key to any list item to override the `certbot_admin_email`. 
 
     certbot_create_command: "{{ certbot_script }} certonly --standalone --noninteractive --agree-tos --email {{ cert_item.email | default(certbot_admin_email) }} -d {{ cert_item.domains | join(',') }}"
 
@@ -71,6 +71,14 @@ The `certbot_create_command` defines the command used to generate the cert.
 Services that should be stopped while `certbot` runs it's own standalone server on ports 80 and 443. If you're running Apache, set this to `apache2` (Ubuntu), or `httpd` (RHEL), or if you have Nginx on port 443 and something else on port 80 (e.g. Varnish, a Java app, or something else), add it to the list so it is stopped when the certificate is generated.
 
 These services will only be stopped the first time a new cert is generated.
+
+#### Webroot Certificate Generation
+
+	certbot_deployhook: "service {{certbot_create_standalone_stop_services }} restart"
+	
+Script content for the deploy hook called by certbot after successfully obtaining the certificate
+	
+When using the `webroot` creation method, a `webroot` item has to be provided for every `certbot_certs` item, specifying which directory to use for the authentication. Also, make sure your webserver correctly delivers contents from this directory.
 
 ### Source Installation from Git
 
