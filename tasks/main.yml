@@ -20,7 +20,7 @@
 
 - include_tasks: install-deploy-hook.yml
   when:
-    - certbot_create_method == 'webroot
+    - certbot_create_method == 'webroot'
 
 - include_tasks: create-cert-webroot.yml
   with_items: "{{ certbot_certs }}"
